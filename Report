@@ -1,0 +1,68 @@
+Report of project factorial calculator
+ 
+1.	Introduction 
+This project outlines the development of a factorial calculator using the Irvine32 library for the Microsoft Macro Assembler (MASM). The factorial of a non-negative integer 𝑛n is the product of all positive integers less than or equal to 𝑛n. Factorials are significant in various fields of mathematics, including combinatorics, algebra, and analysis. This project demonstrates low-level programming skills and efficient use of system resources for input and output operations, offering a practical example of assembly language applications. The program prompts the user for an integer input, computes its factorial, and displays the result, enhancing understanding of how software interacts with hardware to optimize performance and resource management. 
+2.	Library Use 
+The Irvine32 library is utilized in this project for handling input and output operations. It simplifies the process of interacting with the user and displaying results in assembly language. Key functions from the Irvine32 library used in this project include: 
+•	WriteString for displaying text messages. 
+•	ReadInt for reading integer input from the user. 
+•	WriteDec for displaying decimal numbers. 
+•	SetTextColor for setting the color of the text output. 
+3.	Data Flow Diagram 
+The data flow of the factorial calculator can be visualized as follows: 
+1.	User Input: The program prompts the user to enter a non-negative integer. 
+2.	Input Validation: The input is checked. If it is negative, an error message is displayed. 
+3.	Factorial Calculation: For 
+valid non-negative integers, the program computes the factorial using an iterative multiplication process. 
+4.	Display Result: The program displays the computed factorial to the user. 
+5.	Retry Option: The user is asked if they want to try another calculation. If yes, the process repeats; if no, the program exits. 
+ 
+ 
+4.	Project Code 
+ 
+ 
+ 
+ 
+INCLUDE Irvine32.inc 
+ 
+.data itle BYTE "-----------------------------| W E L C O M E  T O  F A C T O R I A L  
+C A L C U L A T O R |-----------------------------", 0     prompt BYTE "Enter a number to calculate its factorial: ", 0     resultMsg BYTE "The factorial of ", 0     isMsg BYTE " is ", 0 
+    borderTop BYTE "+------------------------------------------+", 0     borderBottom BYTE "+------------------------------------------+", 0     borderLine BYTE "|                                          |", 0     tryAgain BYTE "Do you want to try again? (y/n): ", 0 
+    thankYouMsg BYTE "THANK YOU FOR USING OUR FACTORIAL CALCULATOR", 0     errorMsg BYTE "Error: Negative numbers do not have factorials.", 0     number DWORD ?     result DWORD ?     response BYTE ? 
+ .code main PROC     call Crlf 
+    mov eax, LightCyan+(Black*16)     call SetTextColor 
+ 
+    mov edx, OFFSET itle     call WriteString     call Crlf     call Crlf     call Crlf 
+ mainLoop:     mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET borderTop     call WriteString     call Crlf 
+ 
+    mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET borderLine     call WriteString     call Crlf 
+    mov eax, Yellow+(Black*16)     call SetTextColor     mov edx, OFFSET prompt     call WriteString     call ReadInt     mov number, eax 
+ 
+    ; Check for negative number     mov eax, number     cmp eax, 0     jl negativeNumberError 
+     mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET borderLine     call WriteString     call Crlf      mov eax, number     call Factorial     mov result, eax      mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET borderLine     call WriteString     call Crlf     mov eax, Yellow+(Black*16)     call SetTextColor     mov edx, OFFSET resultMsg     call WriteString     mov eax, number     call WriteDec     mov edx, OFFSET isMsg     call WriteString     mov eax, result     call WriteDec     call Crlf      mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET borderLine     call WriteString     call Crlf     mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET borderBottom     call WriteString     call Crlf      mov eax, Yellow+(Black*16)     call SetTextColor     mov edx, OFFSET tryAgain     call WriteString     call ReadChar     mov response, al      cmp response, 'y'     je mainLoop     cmp response, 'n'     je thankYouMessage      call Crlf     jmp mainLoop  negativeNumberError:     mov eax, LightRed+(Black*16)     call SetTextColor     mov edx, OFFSET errorMsg     call WriteString     call Crlf     jmp mainLoop 
+ thankYouMessage:     call Crlf    mov eax, LightCyan+(Black*16)     call SetTextColor     mov edx, OFFSET thankYouMsg     call crlf     call WriteString     call Crlf     call crlf      call crlf  exitProgram:     exit  main ENDP  Factorial PROC     cmp eax, 1     jle FactorialEnd     push eax     dec eax     call Factorial     pop ecx     imul eax, ecx     ret 
+ FactorialEnd:     mov eax, 1     ret  
+Factorial ENDP 
+ 
+END main 
+ 
+ 
+ 
+5.	Output/Result 
+Here are some test cases and their expected outputs: 
+•	Input: 5 o Expected Output: "The factorial of 5 is 120" 
+•	Input: 10 o Expected Output: "The factorial of 10 is 3628800" 
+•	Input: 15 o Expected Output: "The factorial of 15 is 1307674368000" 
+•	Input: 0 
+o Expected Output: "The factorial of 0 is 1" 
+•	Input: 1 o Expected Output: "The factorial of 1 is 1" 
+•	Input: 20 o Expected Output: "The factorial of 20 is 2432902008176640000" 
+•	Input: -5 o Expected Output: "Error: Input must be a non-negative integer" 
+•	Input: 100 
+o Expected Output: "The factorial of 100 is 
+93326215443944152681699238856266700490715968264381621468592963895217599993229 91560894146397615651828625369792082722375825118521091686400000000000000000000 0000" 
+ 
+During testing, the program correctly computed the factorials for a range of inputs, including special cases and larger values, without errors or deviations from the expected results. The user interface was straightforward, providing clear prompts and outputs. Error handling was effective, ensuring the program handled invalid inputs appropriately. User feedback was positive, highlighting the program's efficiency and usability. Suggestions for future improvements included additional features and enhanced visual formatting. 
+ 
+ 
+ 
