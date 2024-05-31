@@ -1,0 +1,127 @@
+INCLUDE Irvine32.inc
+.data
+itle BYTE "-----------------------------| W E L C O M E T O F A C T O R I A L 
+C A L C U L A T O R |-----------------------------", 0
+ prompt BYTE "Enter a number to calculate its factorial: ", 0
+ resultMsg BYTE "The factorial of ", 0
+ isMsg BYTE " is ", 0
+ borderTop BYTE "+------------------------------------------+", 0
+ borderBottom BYTE "+------------------------------------------+", 0
+ borderLine BYTE "| |", 0
+ tryAgain BYTE "Do you want to try again? (y/n): ", 0
+ thankYouMsg BYTE "THANK YOU FOR USING OUR FACTORIAL CALCULATOR", 0
+ errorMsg BYTE "Error: Negative numbers do not have factorials.", 0
+ number DWORD ?
+ result DWORD ?
+ response BYTE ?
+.code
+main PROC
+ call Crlf
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET itle
+ call WriteString
+ call Crlf
+ call Crlf
+ call Crlf
+mainLoop:
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET borderTop
+ call WriteString
+ call Crlf
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET borderLine
+ call WriteString
+ call Crlf
+ mov eax, Yellow+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET prompt
+ call WriteString
+ call ReadInt
+ mov number, eax
+ ; Check for negative number
+ mov eax, number
+ cmp eax, 0
+ jl negativeNumberError
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET borderLine
+ call WriteString
+ call Crlf
+ mov eax, number
+ call Factorial
+ mov result, eax
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET borderLine
+ call WriteString
+ call Crlf
+ mov eax, Yellow+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET resultMsg
+ call WriteString
+ mov eax, number
+ call WriteDec
+ mov edx, OFFSET isMsg
+ call WriteString
+ mov eax, result
+ call WriteDec
+ call Crlf
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET borderLine
+ call WriteString
+ call Crlf
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET borderBottom
+ call WriteString
+ call Crlf
+ mov eax, Yellow+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET tryAgain
+ call WriteString
+ call ReadChar
+ mov response, al
+ cmp response, 'y'
+ je mainLoop
+ cmp response, 'n'
+ je thankYouMessage
+ call Crlf
+ jmp mainLoop
+negativeNumberError:
+ mov eax, LightRed+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET errorMsg
+ call WriteString
+ call Crlf
+ jmp mainLoop
+thankYouMessage:
+ call Crlf
+ mov eax, LightCyan+(Black*16)
+ call SetTextColor
+ mov edx, OFFSET thankYouMsg
+ call crlf
+ call WriteString
+ call Crlf
+ call crlf 
+ call crlf
+exitProgram:
+ exit
+main ENDP
+Factorial PROC
+ cmp eax, 1
+ jle FactorialEnd
+ push eax
+ dec eax
+ call Factorial
+ pop ecx
+ imul eax, ecx
+ ret
+FactorialEnd:
+ mov eax, 1
+ ret
+Factorial ENDP
+END main
